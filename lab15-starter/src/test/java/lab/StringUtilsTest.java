@@ -29,7 +29,7 @@ class StringUtilsTest {
     @Test
     @DisplayName("reverse: Unicode text")
     void reverse_unicodeText() {
-        assertEquals("арэС", StringUtils.reverse("Сэра"));
+        assertEquals("\u0430\u0440\u044D\u0421", StringUtils.reverse("\u0421\u044D\u0440\u0430"));
     }
 
     @Test
