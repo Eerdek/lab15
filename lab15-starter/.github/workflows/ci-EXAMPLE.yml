@@ -1,0 +1,44 @@
+# =====================================================================
+# Энэ файл нь "ЖИШЭЭ" болж буй .yml файл — оюутны өөр workflow-той
+# давхцахгүй байхын тулд "ci-EXAMPLE.yml" нэртэйгээр оруулсан.
+#
+# Lab15 даалгаврын дагуу шинэ `.github/workflows/ci.yml` файл үүсгэх
+# ёстой. Энэ файлыг харж тулгуурлаж болно.
+# =====================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [17, 21]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build & test
+        run: mvn -B clean verify
+
+      - name: Upload JaCoCo report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-${{ matrix.java }}
+          path: target/site/jacoco/
